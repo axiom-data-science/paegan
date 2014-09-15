@@ -3,6 +3,8 @@ from datetime import timedelta, datetime, tzinfo
 from paegan.cdm.timevar import Timevar
 import numpy as np
 from dateutil.parser import parse
+import pickle
+import tempfile
 
 data_path = "/data/lm/tests"
 
@@ -120,3 +122,24 @@ class TimevarTest(unittest.TestCase):
         assert (jds == tvar.dates).all()
 
         ds.close()
+
+    @unittest.skipIf(not os.path.exists(os.path.join(data_path, "marcooshfradar20120331.nc")),
+                     "Resource files are missing that are required to perform the tests.")
+    def test_timevar_pickle(self):
+
+        # NOTE: pickle always worked same process - multiprocessing or a second process had the trouble.
+        # still, we override pickle methods so this will catch any regressions
+
+        datafile = os.path.join(data_path, "marcooshfradar20120331.nc")
+        tvar = Timevar(datafile, name='time', tzinfo=pytz.utc)
+
+        with tempfile.TemporaryFile() as temp:
+            pickle.dump(tvar, temp)
+            temp.seek(0)
+            t2var = pickle.load(temp)
+
+        assert np.allclose(tvar, t2var)
+
+        assert hasattr(t2var, '_units')
+        assert tvar._units == t2var._units
+

@@ -82,6 +82,31 @@ class Timevar(np.ndarray):
 
         return data.view(self)
 
+    def __setstate__(self, *args, **kwargs):
+        """
+        Override for setstate to make sure we save local attributes out of process
+
+        Needed for pickling a Timevar object.
+        """
+        state        = list(args[0])
+        self._tzinfo = state.pop()
+        self._units  = state.pop()
+        self.origin  = state.pop()
+
+        args         = [tuple(state)]
+
+        super(Timevar, self).__setstate__(*args, **kwargs)
+
+    def __reduce_ex__(self, *args, **kwargs):
+        """
+        Override for reduce_ex to make sure we save local attributes out of process
+
+        Needed for pickling a Timevar object.
+        """
+        retval = list(super(Timevar, self).__reduce_ex__(*args, **kwargs))
+        retval[2] = tuple(list(retval[2]) + [self.origin, self._units, self._tzinfo])
+        return tuple(retval)
+
     def gettimestep(self):
         return self.seconds[1] - self.seconds[0]
 
