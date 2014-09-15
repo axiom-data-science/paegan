@@ -68,6 +68,7 @@ class TimevarTest(unittest.TestCase):
         ds.close()
 
     @unittest.skipIf(not os.path.exists(os.path.join(data_path, "pws_L2_2012040100.nc")) or \
+                     not os.path.exists(os.path.join(data_path, "marcooshfradar20120331.nc")) or \
                      not os.path.exists(os.path.join(data_path, "ocean_avg_synoptic_seg22.nc")),
                      "Resource files are missing that are required to perform the tests.")
     def test_timevar_hfradar_days_values(self):
