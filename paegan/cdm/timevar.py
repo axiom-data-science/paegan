@@ -42,14 +42,14 @@ class Timevar(np.ndarray):
 
         if self._nc.variables[name].ndim > 1:
             _str_data = self._nc.variables[name][:,:]
-            if units == None:
+            if units is None:
                 units = timevar_units
             dates = [parse(_str_data[i, :].tostring()) for i in range(len(_str_data[:,0]))]
             data = netCDF4.date2num(dates, units)
         else:
             data = self._nc.variables[name][:]
 
-        if units == None:
+        if units is None:
             try:
                 self._units = self._nc.variables[name].units
             except StandardError:
@@ -57,16 +57,15 @@ class Timevar(np.ndarray):
         else:
             self._units = units
 
-        if tzinfo == None:
+        if tzinfo is None:
             self._tzinfo = pytz.utc
         else:
             self._tzinfo = tzinfo
 
-
-        units_split=self._units.split(' ',2)
+        units_split = self._units.split(' ', 2)
         assert len(units_split) == 3 and units_split[1] == 'since', \
             'units string improperly formatted\n' + self._units
-        self.origin=parse(units_split[2])
+        self.origin = parse(units_split[2])
 
         self._units = units_split[0].lower()
 
