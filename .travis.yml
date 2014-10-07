@@ -22,9 +22,10 @@ before_install:
   - conda create --quiet -n $ENV_NAME python=$TRAVIS_PYTHON_VERSION
   - source activate $ENV_NAME
 
+install:
   # Customise the testing environment
   # ---------------------------------
-  - conda install --quiet --file requirements.txt
+  - conda install --channel https://conda.binstar.org/binstar --file requirements.txt
 script:
   - PYTHONPATH=`pwd` py.test
 notifications:
