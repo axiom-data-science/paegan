@@ -27,6 +27,7 @@ install:
   # ---------------------------------
   - conda install --channel https://conda.binstar.org/binstar --file requirements.txt
   - conda install pytest
+  - conda install setuptools
 script:
   - PYTHONPATH=`pwd` py.test
 notifications:
