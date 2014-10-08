@@ -30,7 +30,8 @@ install:
   - conda install setuptools
 
   # Grab external dataset files for testing
-  - mkdir -p /data/lm/tests
+  - sudo mkdir -p /data/lm/tests
+  - sudo chown -R $USER /data/lm/tests
   - wget http://s3.amazonaws.com/paegan/resources/ETOPO1_Bed_g_gmt4.grd -O /data/lm/tests/ETOPO1_Bed_g_gmt4.grd
   - wget https://s3.amazonaws.com/paegan/resources/marcooshfradar20120331.nc -O /data/lm/tests/marcooshfradar20120331.nc
   - wget http://s3.amazonaws.com/paegan/resources/ncom_glb_sfc8_hind_2012033100.nc -O /data/lm/tests/ncom_glb_sfc8_hind_2012033100.nc
