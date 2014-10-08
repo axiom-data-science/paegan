@@ -28,6 +28,15 @@ install:
   - conda install --channel https://conda.binstar.org/binstar --file requirements.txt
   - conda install pytest
   - conda install setuptools
+
+  # Grab external dataset files for testing
+  - mkdir /data/lm/tests
+  - wget http://s3.amazonaws.com/paegan/resources/ETOPO1_Bed_g_gmt4.grd -O /data/lm/tests/ETOPO1_Bed_g_gmt4.grd
+  - wget https://s3.amazonaws.com/paegan/resources/marcooshfradar20120331.nc -O /data/lm/tests/marcooshfradar20120331.nc
+  - wget http://s3.amazonaws.com/paegan/resources/ncom_glb_sfc8_hind_2012033100.nc -O /data/lm/tests/ncom_glb_sfc8_hind_2012033100.nc
+  - wget http://s3.amazonaws.com/paegan/resources/m201310100.out3.nc -O /data/lm/tests/m201310100.out3.nc
+  - wget http://s3.amazonaws.com/paegan/resources/ocean_avg_synoptic_seg22.nc -O /data/lm/tests/ocean_avg_synoptic_seg22.nc
+  - wget http://s3.amazonaws.com/paegan/resources/pws_L2_2012040100.nc -O /data/lm/tests/pws_L2_2012040100.nc
 script:
   - PYTHONPATH=`pwd` py.test
 notifications:
