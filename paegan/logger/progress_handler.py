@@ -3,11 +3,12 @@ import time
 import logging
 
 from datetime import datetime
-from collections import deque
+
 
 class OnlyProgressFilter(logging.Filter):
     def filter(self, record):
         return record.levelno == logging.PROGRESS
+
 
 class ProgressHandler(logging.Handler):
     def __init__(self, progress_deque):
@@ -32,7 +33,7 @@ class ProgressHandler(logging.Handler):
         # (datetime, progress, message)
 
         # Get a timezone aware datetime from time.time()
-        dt = datetime.fromtimestamp(record.created).replace(tzinfo=pytz.timezone(time.strftime("%Z",time.gmtime()))).astimezone(pytz.utc)
+        dt = datetime.fromtimestamp(record.created).replace(tzinfo=pytz.timezone(time.strftime("%Z", time.gmtime()))).astimezone(pytz.utc)
 
         msg = record.msg
 
