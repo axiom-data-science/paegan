@@ -135,6 +135,6 @@ They are expected to be located in `/data/lm/tests`, if they are not you can sym
 
 Contributors
 ----------------
-* Kyle Wilcox <kwilcox@asascience.com>
-* Alex Crosby <acrosby@asascience.com>
+* Kyle Wilcox <kyle@axiomdatascience.com> - [@kwilcox](http://github.com/kwilcox)
+* Alex Crosby <crosbyar@gmail.com> - [@acrosby](http://github.com/acrosby)
 * Brian McKenna <bmckenna@asascience.com>
