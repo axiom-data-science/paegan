@@ -13,11 +13,20 @@ import pytz
 # Same basedate as matplotlib: http://matplotlib.org/api/dates_api.html#matplotlib.dates.num2date
 timevar_units = 'days since 0001-01-01 00:00:00'
 
-def date2num(python_datetime):
-    return netCDF4.date2num(python_datetime, timevar_units, 'proleptic_gregorian')
+
+def date2num(python_datetime, tzinfo=None):
+    tz = tzinfo or pytz.utc
+    try:
+        python_datetime[0]
+    except TypeError:
+        python_datetime = [python_datetime]
+    return netCDF4.date2num([ d.astimezone(tz).replace(tzinfo=None) for d in python_datetime ], timevar_units, calendar='proleptic_gregorian')
+
 
 def num2date(indatenum, inunits, tzinfo=None):
-    return np.vectorize(lambda x: x.replace(tzinfo=tzinfo))(netCDF4.num2date(indatenum, inunits, 'proleptic_gregorian'))
+    tz = tzinfo or pytz.utc
+    return np.vectorize(lambda x: x.replace(tzinfo=tz))(netCDF4.num2date(indatenum, inunits, calendar='proleptic_gregorian'))
+
 
 class Timevar(np.ndarray):
 
@@ -154,7 +163,7 @@ class Timevar(np.ndarray):
         return num2date(self, self._units + " since " + self.origin.strftime('%Y-%m-%dT%H:%M:%S'), tzinfo=self._tzinfo)
 
     def get_datenum(self):
-        return date2num(self.dates)
+        return date2num(self.dates, tzinfo=self._tzinfo)
 
     datenum = property(get_datenum, None, doc="datenum in seconds since 1970-01-01")
     seconds = property(get_seconds, None, doc="seconds")
