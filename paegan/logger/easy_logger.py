@@ -6,6 +6,7 @@ import threading
 from paegan.logger.multi_process_logging import MultiProcessingLogHandler
 from paegan.logger.progress_handler import ProgressHandler
 
+
 class EasyLogger(object):
     def __init__(self, logpath, level=None):
 
@@ -59,6 +60,8 @@ class EasyLogger(object):
     def close_queue(self):
         self.queue.put_nowait(StopIteration)
         self.e.set()
+        self.queue.close()
+        self.queue.join_thread()
 
     def close(self):
         self.close_handlers()

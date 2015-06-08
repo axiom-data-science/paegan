@@ -1,28 +1,37 @@
-from logging import FileHandler
-import multiprocessing, threading, logging, sys, traceback
+import time
+
+from logging import FileHandler, StreamHandler
+import threading, logging, sys, traceback
+
 
 class MultiProcessingLogHandler(logging.Handler):
-    def __init__(self, name, queue):
+    def __init__(self, name, queue, stream=None):
+        super(MultiProcessingLogHandler, self).__init__()
         logging.Handler.__init__(self)
 
-        self._handler = FileHandler(name)
+        self._handlers = [ FileHandler(name) ]
+        if stream is True:
+            self._handlers.append(StreamHandler())
         self.queue = queue
+        self.stop = False
 
-        t = threading.Thread(target=self.receive)
-        t.daemon = True
-        t.start()
+        self.t = threading.Thread(target=self.receive, args=(lambda: self.stop,))
+        self.t.daemon = True
+        self.t.start()
 
     def setFormatter(self, fmt):
         logging.Handler.setFormatter(self, fmt)
-        self._handler.setFormatter(fmt)
+        for h in self._handlers:
+            h.setFormatter(fmt)
 
-    def receive(self):
+    def receive(self, stop):
         while True:
+            if stop():
+                break
             try:
                 record = self.queue.get()
-                if record == StopIteration:
-                    break
-                self._handler.emit(record)
+                for h in self._handlers:
+                    h.emit(record)
             except (KeyboardInterrupt, SystemExit):
                 raise
             except EOFError:
@@ -30,6 +39,8 @@ class MultiProcessingLogHandler(logging.Handler):
             except Exception:
                 traceback.print_exc(file=sys.stderr)
                 break
+
+            time.sleep(0.1)
 
         return
 
@@ -45,7 +56,7 @@ class MultiProcessingLogHandler(logging.Handler):
             record.msg = record.msg % record.args
             record.args = None
         if record.exc_info:
-            dummy = self.format(record)
+            record = self.format(record)
             record.exc_info = None
 
         return record
@@ -60,6 +71,8 @@ class MultiProcessingLogHandler(logging.Handler):
             self.handleError(record)
 
     def close(self):
-        self.queue.put_nowait(StopIteration)
-        self._handler.close()
+        self.stop = True
+        self.t.join()
+        for h in self._handlers:
+            h.close()
         logging.Handler.close(self)
