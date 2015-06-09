@@ -2,6 +2,7 @@ import time
 import json
 import logging
 from datetime import datetime
+from paegan.utils.datetime import datetime_parser
 
 import pytz
 
@@ -40,7 +41,7 @@ class RedisHandler(logging.Handler):
         # (datetime, progress, message)
 
         # Get a timezone aware datetime from time.time()
-        dt = datetime.fromtimestamp(record.created).replace(tzinfo=pytz.timezone(time.strftime("%Z", time.gmtime()))).astimezone(pytz.utc)
+        dt = datetime_parser(datetime.fromtimestamp(record.created).isoformat() + time.strftime(" %Z", time.gmtime())).astimezone(pytz.utc)
         payload = { "time"    : dt.isoformat(),
                     "value"   : None,
                     "message" : None,
