@@ -1,9 +1,8 @@
 import pytz
 import time
 import logging
-
 from datetime import datetime
-
+from paegan.utils.datetime import datetime_parser
 
 class OnlyProgressFilter(logging.Filter):
     def filter(self, record):
@@ -33,7 +32,7 @@ class ProgressHandler(logging.Handler):
         # (datetime, progress, message)
 
         # Get a timezone aware datetime from time.time()
-        dt = datetime.fromtimestamp(record.created).replace(tzinfo=pytz.timezone(time.strftime("%Z", time.gmtime()))).astimezone(pytz.utc)
+        dt = datetime_parser(datetime.fromtimestamp(record.created).isoformat() + time.strftime(" %Z", time.gmtime())).astimezone(pytz.utc)
 
         msg = record.msg
 
