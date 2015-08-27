@@ -1,6 +1,9 @@
 import os
 import unittest
-from urlparse import urlparse
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
 from paegan.utils.asarandom import AsaRandom
 
 class AsaRandomTest(unittest.TestCase):

@@ -19,7 +19,7 @@ class SectionTest(unittest.TestCase):
         dt = None
 
         # 10 profiles
-        for x in xrange(0,10):
+        for x in range(0,10):
             lat = random.randint(40,44)
             lon = random.randint(-74,-70)
             loc = sPoint(lon,lat,0)
@@ -32,11 +32,11 @@ class SectionTest(unittest.TestCase):
             prof.time = dt
 
             # Each with 20 depths
-            for y in xrange(0,20):
+            for y in range(0,20):
                 p = Point()
                 p.time = dt
                 p.location = sPoint(loc.x, loc.y, y)
-                m1 = Member(value=random.uniform(30,40), unit='°C', name='Water Temperatire', description='water temperature', standard='sea_water_temperature')
+                m1 = Member(value=random.uniform(30,40), unit='°C', name='Water Temperature', description='water temperature', standard='sea_water_temperature')
                 m2 = Member(value=random.uniform(80,100), unit='PSU', name='Salinity', description='salinity', standard='salinity')
                 p.add_member(m1)
                 p.add_member(m2)

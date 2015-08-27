@@ -44,7 +44,7 @@ class EasyLogger(object):
                     if record == StopIteration:
                         break
 
-                    print record
+                    print(record)
 
                 except Exception:
                     pass

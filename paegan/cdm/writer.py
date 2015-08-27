@@ -19,17 +19,17 @@ def add_coordinates(nc, dict_of_dims):
     # Loop through keys, and add each as a dimension, with the
     # cooresponding dict value tuple as the representative
     # shape of the dimension.
-    for dimname in dict_of_dims.iterkeys():
+    for dimname in dict_of_dims.keys():
         t = nc.createDimension(dimname, size=dict_of_dims[dimname])
     nc.sync()
-    
+
 def add_variable(nc, varname, data, dims, compress=False, fill=FILL_VALUE):
     '''
     Thin wrapper for easily adding data to netcdf variable with just
     the variable name the current array of values, and a tuple with
     the cooresponding dimension names
     '''
-    v = nc.createVariable(varname, data.dtype, dimensions=dims, zlib=compress, fill_value=fill) 
+    v = nc.createVariable(varname, data.dtype, dimensions=dims, zlib=compress, fill_value=fill)
     v[:] = data
     nc.sync()
 

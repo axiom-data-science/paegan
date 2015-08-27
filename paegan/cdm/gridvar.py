@@ -96,15 +96,15 @@ class Gridobj:
             nx,ny = self._xarray.shape
             one = MultiLineString([((self._xarray[i][0],self._yarray[i][0]),(self._xarray[i+1][0],self._yarray[i+1][0])) for i in range(nx-1)])
             two = MultiLineString([((self._xarray[nx-1][j],self._yarray[nx-1][j]),(self._xarray[nx-1][j+1],self._yarray[nx-1][j+1])) for j in range(ny-1)])
-            three = MultiLineString([((self._xarray[i][ny-1],self._yarray[i][ny-1]),(self._xarray[i-1][ny-1],self._yarray[i-1][ny-1])) for i in reversed(range(1,nx))])
-            four = MultiLineString([((self._xarray[0][j],self._yarray[0][j]),(self._xarray[0][j-1],self._yarray[0][j-1])) for j in reversed(range(1,ny))])
+            three = MultiLineString([((self._xarray[i][ny-1],self._yarray[i][ny-1]),(self._xarray[i-1][ny-1],self._yarray[i-1][ny-1])) for i in reversed(list(range(1,nx)))])
+            four = MultiLineString([((self._xarray[0][j],self._yarray[0][j]),(self._xarray[0][j-1],self._yarray[0][j-1])) for j in reversed(list(range(1,ny)))])
             m = one.union(two).union(three).union(four)
         else: # RGRID
             nx,ny = self._xarray.shape[0], self._yarray.shape[0]
             one = LineString([(self._xarray[i], self._yarray[0]) for i in range(nx)])
             two = LineString([(self._xarray[-1], self._yarray[i]) for i in range(ny)])
-            three = LineString([(self._xarray[i], self._yarray[-1]) for i in reversed(range(nx))])
-            four = LineString([(self._xarray[0], self._yarray[i]) for i in reversed(range(ny))])
+            three = LineString([(self._xarray[i], self._yarray[-1]) for i in reversed(list(range(nx)))])
+            four = LineString([(self._xarray[0], self._yarray[i]) for i in reversed(list(range(ny)))])
             m = MultiLineString([one,two,three,four])
 
         polygons = list(polygonize(m))
@@ -119,14 +119,14 @@ class Gridobj:
     def get_xunits(self):
         try:
             units = self._nc.variables[self._xname].units
-        except StandardError:
+        except Exception:
             units = None
         return units
 
     def get_yunits(self):
         try:
             units = self._nc.variables[self._yname].units
-        except StandardError:
+        except Exception:
             units = None
         return units
 

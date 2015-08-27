@@ -17,7 +17,7 @@ class SectionCollectionTest(unittest.TestCase):
         s_collection = SectionCollection()
 
         # 20 sections
-        for x in xrange(0,20):
+        for x in range(0,20):
 
             day = 1
             hour = 0
@@ -25,7 +25,7 @@ class SectionCollectionTest(unittest.TestCase):
             dt = None
 
             # 10 profiles per section
-            for x in xrange(0,10):
+            for x in range(0,10):
                 lat = random.randint(40,44)
                 lon = random.randint(-74,-70)
                 loc = sPoint(lon,lat,0)
@@ -38,11 +38,11 @@ class SectionCollectionTest(unittest.TestCase):
                 prof.time = dt
 
                 # Each with 20 depths
-                for y in xrange(0,20):
+                for y in range(0,20):
                     p = Point()
                     p.time = dt
                     p.location = sPoint(loc.x, loc.y, y)
-                    m1 = Member(value=random.uniform(30,40), unit='°C', name='Water Temperatire', description='water temperature', standard='sea_water_temperature')
+                    m1 = Member(value=random.uniform(30,40), unit='°C', name='Water Temperature', description='water temperature', standard='sea_water_temperature')
                     m2 = Member(value=random.uniform(80,100), unit='PSU', name='Salinity', description='salinity', standard='salinity')
                     p.add_member(m1)
                     p.add_member(m2)
@@ -51,7 +51,7 @@ class SectionCollectionTest(unittest.TestCase):
                     dt = dt + timedelta(minutes=2)
 
                 sc.add_element(prof)
-                
+
             s_collection.add_element(sc)
 
         s_collection.calculate_bounds()

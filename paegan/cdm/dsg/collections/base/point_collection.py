@@ -31,13 +31,14 @@ class PointCollection(FeatureCollection):
             If the collection already knows its bbox; time_range; and/or size,
             they are recomputed.
         """
-        stuff = map(lambda x: [x.time, x.location], self._elements)
-        self.time_range = sorted(map(lambda x: x[0], stuff))
-        points = map(lambda x: x[1], stuff)
+        stuff = [[x.time, x.location] for x in self._elements]
+        self.time_range = sorted([x[0] for x in stuff])
+        points = [x[1] for x in stuff]
+
 
         try:
             filtered_stuff = self.__filter_depths(stuff)
-            self.depth_range = sorted(map(lambda x: x[1].z, filtered_stuff))
+            self.depth_range = sorted([x[1].z for x in filtered_stuff])
         except:
             self.depth_range = None
 

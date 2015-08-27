@@ -1,3 +1,8 @@
+try:
+    from __builtin__ import basestring as str
+except:
+    pass
+
 import pytz
 import time
 import logging
@@ -41,8 +46,12 @@ class ProgressHandler(logging.Handler):
 
         if isinstance(msg, tuple):
             return tuple([dt]) + msg
-        elif isinstance(msg, str) or isinstance(msg, unicode):
-            return (dt, -1, unicode(msg))
+        elif isinstance(msg, str):
+            try:
+                msg = unicode(msg)
+            except NameError:
+                pass
+            return (dt, -1, msg)
         elif isinstance(msg, float) or isinstance(msg, int):
             return (dt, msg, None)
         else:

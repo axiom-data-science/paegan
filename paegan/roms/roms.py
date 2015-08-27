@@ -59,8 +59,8 @@ def shrink(a, b):
 
     if isinstance(b, np.ndarray):
         if not len(a.shape) == len(b.shape):
-            raise Exception, \
-                  'input arrays must have the same number of dimensions'
+            raise Exception('input arrays must have the same '
+                            'number of dimensions')
         a = shrink(a,b.shape)
         b = shrink(b,a.shape)
         return (a, b)
@@ -141,7 +141,7 @@ def uv_to_rho(file):
 
     # lat_rho and lon_rho should have identical shapes (eta,xi)/(y/x)
     if lat_rho.shape != lon_rho.shape:
-        print "Shape of lat_rho and lon_rho must be equal"
+        print("Shape of lat_rho and lon_rho must be equal")
         return None
 
     # Store shape for use below
@@ -285,9 +285,9 @@ def regrid_roms(newfile, filename, lon_new, lat_new, t=None, z=None):
             s_new = z.shape[0]
             time_new = t.shape[0]
 
-            #[pw.add_attribute(new, at, new.getncattr(at)) for at in new.ncattrs()]
+            # [pw.add_attribute(new, at, new.getncattr(at)) for at in new.ncattrs()]
             pw.add_coordinates(new, OrderedDict([("time_new",time_new),("s_new",s_new),("eta_new",eta_new),("xi_new",xi_new)]))
-            #print "Coordinates " + str([("time_new",time_new),("s_new",s_new),("eta_new",eta_new),("xi_new",xi_new)])
+            # print("Coordinates " + str([("time_new",time_new),("s_new",s_new),("eta_new",eta_new),("xi_new",xi_new)]))
 
             pw.add_variable(new, "ocean_time", t, ("time_new",))
             pw.add_variable(new, "s_new", z, ("s_new",))
@@ -297,7 +297,7 @@ def regrid_roms(newfile, filename, lon_new, lat_new, t=None, z=None):
             elif len(lon_new.shape) == 1 and len(lat_new.shape) == 1:
                 pw.add_variable(new, "lat_new", lat_new, ("eta_new",))
                 pw.add_variable(new, "lon_new", lon_new, ("xi_new",))
-            # Identify variables that arn't coordinates, and their native grids,
+            # Identify variables that aren't coordinates, and their native grids,
             # convert non-rho variables to rho with `average_adjacents`. Create
             # sequence of rho-based variables in `roms_variables` object
             for key in nc.variables:
@@ -324,18 +324,18 @@ def regrid_roms(newfile, filename, lon_new, lat_new, t=None, z=None):
                     elif grid_type == "v":
                         var_dimensionality = len(var.shape)
                         if "sv" in key or "bv" in key or "DV" in key or key == "vbar" or key == "v":
-                            paired_vector = {"svstr":"sustr", 
-                                             "bvstr":"bustr", 
-                                             "DV_avg1":"DU_avg1", 
+                            paired_vector = {"svstr":"sustr",
+                                             "bvstr":"bustr",
+                                             "DV_avg1":"DU_avg1",
                                              "DV_avg2":"DU_avg2",
                                              "vbar":"ubar",
                                              "v":"u"}
-                            for i in xrange(var.shape[0]):
+                            for i in range(var.shape[0]):
                                 if var_dimensionality == 3:
                                     complex_uv = _uv_to_rho(nc.variables[paired_vector[key]][i,:,:], var[i,:,:], nc.variables["angle"][:], rho_x, rho_y)
                                     uz, vz = complex_uv.real, complex_uv.imag
                                 elif var_dimensionality == 4:
-                                    for j in xrange(var.shape[1]):
+                                    for j in range(var.shape[1]):
                                         complex_uv = _uv_to_rho(nc.variables["u"][i,j,:,:], var[i,j,:,:], nc.variables["angle"][:], rho_x, rho_y)
                                         if j == 0:
                                             uz, vz = complex_uv.real[np.newaxis,:], complex_uv.imag[np.newaxis,:]
@@ -385,7 +385,7 @@ def regrid_roms(newfile, filename, lon_new, lat_new, t=None, z=None):
                                     [pw.add_attribute(new, at, nc.variables[key].getncattr(at), var=key) for at in nc.variables[key].ncattrs()]
                                     pw.add_attribute(new, "coordinates", "ocean_time lat_new lon_new", var=key)
                                 except:
-                                    print key, vartmp.shape, lon_rho.shape, lat_rho.shape, time.shape
+                                    print(key, vartmp.shape, lon_rho.shape, lat_rho.shape, time.shape)
                             elif var.shape[0] == depth_rho.shape[0]:
                                 interpolator = CfGeoInterpolator(vartmp, lon_rho, lat_rho, z=depth_rho)
                                 values_interp = interpolator.interpgrid(lon_new, lat_new, z=z)
@@ -394,7 +394,7 @@ def regrid_roms(newfile, filename, lon_new, lat_new, t=None, z=None):
                                 [pw.add_attribute(new, at, nc.variables[key].getncattr(at), var=key) for at in nc.variables[key].ncattrs()]
                                 pw.add_attribute(new, "coordinates", "s_new lat_new lon_new", var=key)
                             else:
-                                raise valueerror("unsure about what dimension this varaible varies with in addition to lat/lon.")
+                                raise ValueError("unsure about what dimension this variable varies with in addition to lat/lon.")
                         elif var_dimensionality == 2:
                             vartmp[np.where(nc.variables["mask_rho"]==0)] = np.nan
                             interpolator = CfGeoInterpolator(vartmp, lon_rho, lat_rho)
@@ -406,7 +406,7 @@ def regrid_roms(newfile, filename, lon_new, lat_new, t=None, z=None):
                         else:
                             # todo if 1-d check for which dimension it matches and interp based on that...
                             #      if 5+ d, only interpolate to the 4d dimensions that we can specify i guess...
-                            raise valueerror("sort of confused about the dimensionality of the variable i am attempting to regrid...")
+                            raise ValueError("sort of confused about the dimensionality of the variable i am attempting to regrid...")
                 elif grid_type == "psi":
                     pass
                 else:

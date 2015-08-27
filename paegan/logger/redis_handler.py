@@ -1,3 +1,8 @@
+try:
+    from __builtin__ import basestring as str
+except:
+    pass
+
 import time
 import json
 import logging
@@ -58,7 +63,7 @@ class RedisHandler(logging.Handler):
         if isinstance(msg, list) or isinstance(msg, tuple):
             payload["value"] = msg[0]
             payload["message"] = msg[1]
-        elif isinstance(msg, str) or isinstance(msg, unicode):
+        elif isinstance(msg, str):
             payload["message"] = msg
         elif isinstance(msg, float) or isinstance(msg, int):
             payload["value"] = msg
