@@ -50,7 +50,7 @@ class Station(PointCollection):
                 mwhat.append( { key: m[key] for key in keys if key in m } )
 
         # Now unique them on name
-        mwhat = { x['name']:x for x in mwhat }.values()
+        mwhat = list({ x['name']:x for x in mwhat }.values())
 
         return mwhat
 
@@ -78,11 +78,12 @@ class Station(PointCollection):
             they are recomputed.
         """
         self.location = self._location # To set locations for all points that don't have one
-        stuff = map(lambda x: [x.time, x.location], self._elements)
-        self.time_range = sorted(map(lambda x: x[0], stuff))
-        points = map(lambda x: x[1], stuff)
+        stuff = [[x.time, x.location] for x in self._elements]
+        self.time_range = sorted([x[0] for x in stuff])
+        points = [x[1] for x in stuff]
+
         try:
-            self.depth_range = sorted(map(lambda x: x[1].z, stuff))
+            self.depth_range = sorted([x[1].z for x in stuff])
         except:
             self.depth_range = None
         self.bbox = MultiPoint([self.location, self.location]).envelope

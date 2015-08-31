@@ -14,4 +14,4 @@ class Section(ProfileCollection):
             Returns the nominal times of the profiles and the Points
             the profile was taken at.
         """
-        return map(lambda x: [x.location, x.time], self._elements)
+        return [[x.location, x.time] for x in self._elements]

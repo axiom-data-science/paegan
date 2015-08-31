@@ -52,7 +52,7 @@ class StationProfile(ProfileCollection):
                 mwhat.append( { key: m[key] for key in keys if key in m } )
 
         # Now unique them on name
-        mwhat = { x['name']:x for x in mwhat }.values()
+        mwhat = list({ x['name']:x for x in mwhat }.values())
 
         return mwhat
 
@@ -66,7 +66,7 @@ class StationProfile(ProfileCollection):
             they are recomputed.
         """
         # tell all contained profiles to calculate their bounds
-        map(lambda x: x.calculate_bounds(), self._elements)
+        list([x.calculate_bounds() for x in self._elements])
 
         # @TODO size is just number of timesteps?
         self.size = len(self._elements)
@@ -75,12 +75,9 @@ class StationProfile(ProfileCollection):
         self.bbox = MultiPoint([self.location, self.location]).envelope
 
         time_set = set()
-        map(time_set.add, AsaList.flatten([p.time for p in self._elements]))
+        list(map(time_set.add, AsaList.flatten([p.time for p in self._elements])))
         self.time_range = sorted(list(time_set))
 
         depth_set = set()
-        map(depth_set.add, AsaList.flatten([p.depth_range for p in self._elements]))
+        list(map(depth_set.add, AsaList.flatten([p.depth_range for p in self._elements])))
         self.depth_range = sorted(list(depth_set))
-
-
-

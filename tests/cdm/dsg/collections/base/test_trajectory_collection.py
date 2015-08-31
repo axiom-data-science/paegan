@@ -18,7 +18,7 @@ class TrajectoryCollectionTest(unittest.TestCase):
         t_collection = TrajectoryCollection()
 
         # 20 trajectories
-        for x in xrange(0,20):
+        for x in range(0,20):
 
             tr = Trajectory()
 
@@ -31,7 +31,7 @@ class TrajectoryCollectionTest(unittest.TestCase):
             depth = 0
 
             # 100 points in each trajectory
-            for l in xrange(0,100):
+            for l in range(0,100):
 
                 lat += random.uniform(-0.25,0.25)
                 lon += random.uniform(-0.25,0.25)
@@ -49,7 +49,7 @@ class TrajectoryCollectionTest(unittest.TestCase):
                 p1.add_member(member2)
 
                 tr.add_element(p1)
-        
+
             t_collection.add_element(tr)
 
         t_collection.calculate_bounds()

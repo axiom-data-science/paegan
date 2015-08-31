@@ -61,7 +61,7 @@ class Timevar(np.ndarray):
         if units is None:
             try:
                 self._units = self._nc.variables[name].units
-            except StandardError:
+            except Exception:
                 self._units = units
         else:
             self._units = units

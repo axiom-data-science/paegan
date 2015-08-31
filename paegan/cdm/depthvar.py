@@ -32,7 +32,7 @@ class Depthvar(np.ndarray):
         if units == None:
             try:
                 self._units = self._nc.variables[name].units
-            except StandardError:
+            except Exception:
                 self._units = 'meters'
         else:
             self._units = units

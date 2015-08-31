@@ -1,3 +1,8 @@
+try:
+    from __builtin__ import basestring as str
+except:
+    pass
+
 import numpy as np
 import netCDF4, datetime, copy
 from paegan.cdm.timevar import Timevar
@@ -67,7 +72,7 @@ def _sub_by_nan(data, ind):
         if len(ind) > 0:
             xtmp = -1 * np.ones_like(data)
             xtmp[ind[0]:ind[-1]+1] = ind
-            xbool = range(len(data)) != xtmp
+            xbool = list(range(len(data))) != xtmp
             data[xbool] = np.nan
         else:
             data = np.nan * np.ones_like(data)
@@ -83,10 +88,10 @@ def _sub_by_nan2(data, ind):
         if (len(ind[0]) > 0) & (len(ind[1]) > 0):
             xtmp = -1 * np.ones_like(data[1, :])
             xtmp[ind[1][0]:ind[1][-1]+1] = ind[1]
-            xbool = range(len(data[1])) != xtmp
+            xbool = list(range(len(data[1]))) != xtmp
             ytmp = -1 * np.ones_like(data[:, 1])
             ytmp[ind[0][0]:ind[0][-1]+1] = ind[0]
-            ybool = range(len(data[0])) != ytmp
+            ybool = list(range(len(data[0]))) != ytmp
             data[ybool, xbool] = np.nan
         else:
             data = np.nan * np.ones_like(data)
@@ -98,7 +103,7 @@ class CommonDataset(object):
     @staticmethod
     def nc_object(ncfile, tname='time'):
 
-        if isinstance(ncfile, basestring):
+        if isinstance(ncfile, str):
             try:
                 return netCDF4.Dataset(ncfile)
             except (IOError, RuntimeError, IndexError):
@@ -268,7 +273,7 @@ class Dataset(object):
             assert self.nc is not None
             # Raises an exception when the dataset has alrady been closed
             self.nc.__str__()
-        except StandardError:
+        except Exception:
             self.nc = CommonDataset.nc_object(self._filepath)
             self.metadata = self.nc.__dict__
 
@@ -276,7 +281,7 @@ class Dataset(object):
         try:
             # close will raise an error if the Dataset is already closed
             self.nc.close()
-        except StandardError:
+        except Exception:
             pass
         finally:
             self.metadata = None
@@ -423,7 +428,7 @@ class Dataset(object):
         ncvar = self.nc.variables[var]
         try:
             coordinates = ncvar.coordinates.split()
-        except StandardError:
+        except Exception:
             coordinates = []
         # If the coordinate names not in kwargs, then figure
         # out the remaining coordinate names
@@ -474,7 +479,7 @@ class Dataset(object):
                 for cdim in cdims:
                     try:
                         total.append(dims.index(cdim))
-                    except StandardError:
+                    except Exception:
                         pass
         total = np.unique(np.asarray(total))
 
@@ -522,7 +527,7 @@ class Dataset(object):
                     sn = self.nc.variables[var].standard_name
                     if standard_name == sn:
                         var_matches.append(var)
-                except StandardError:
+                except Exception:
                     pass
         else:
             pass
@@ -561,7 +566,7 @@ class Dataset(object):
                     for cdim in cdims:
                         try:
                             positions[common_name].append(dims.index(cdim))
-                        except StandardError:
+                        except Exception:
                             pass
         if names['tname'] is not None:
             #tname = names['tname']
@@ -631,7 +636,7 @@ class Dataset(object):
                     for cdim in cdims:
                         try:
                             positions[common_name].append(dims.index(cdim))
-                        except StandardError:
+                        except Exception:
                             pass
 
         if positions["time"] is not None:
@@ -725,7 +730,7 @@ class Dataset(object):
                     for cdim in cdims:
                         try:
                             positions[common_name].append(dims.index(cdim))
-                        except StandardError:
+                        except Exception:
                             pass
         # get t inds, z inds, xy inds
         # tinds = [[1,],]
@@ -872,7 +877,7 @@ class Dataset(object):
         if type(varlist) == str:
             varlist = (varlist,)
         for var in new._current_variables:
-            coord_names = coord_names + new.get_coord_names(var).values()
+            coord_names = coord_names + list(new.get_coord_names(var).values())
         for var in self._current_variables:
             if (not var in set(varlist)) and (not var in set(coord_names)):
                 new._current_variables.remove(var)

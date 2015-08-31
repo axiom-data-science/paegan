@@ -15,4 +15,4 @@ class Trajectory(PointCollection):
         """
             Returns the Points along the trajectory
         """
-        return map(lambda x: [x.location, x.time], self._elements)
+        return [[x.location, x.time] for x in self._elements]

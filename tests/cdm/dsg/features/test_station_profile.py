@@ -19,14 +19,14 @@ class StationProfileTest(unittest.TestCase):
         sp.set_property("authority", "IOOS")
 
         # add a sequence of profiles
-        for y in xrange(3):
+        for y in range(3):
             dt1 = datetime(2013, 1, 1, 12, 0, 10 * y)
             prof1          = Profile()
             prof1.location = sPoint(-77, 33)
             prof1.time     = dt1
 
             # add a string of points going down in z
-            for x in xrange(5):
+            for x in range(5):
                 p1 = Point()
                 p1.time = dt1
                 p1.location = sPoint(-77, 33, -5 * x)
