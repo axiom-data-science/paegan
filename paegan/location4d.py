@@ -1,5 +1,9 @@
+import calendar
+
 from shapely.geometry import Point
 from copy import deepcopy
+from paegan.logger import logger
+
 
 class Location4D(object):
     """
@@ -91,5 +95,10 @@ class Location4D(object):
         return "Time: %s, Lat: %f, Lon: %f, Depth: %fm " % (self.time, self.latitude, self.longitude, self.depth)
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__)
-            and self.__dict__ == other.__dict__)
+        return (isinstance(other, self.__class__) and self.__dict__ == other.__dict__)
+
+    def __hash__(self):
+        lat_positive = 1 if self.latitude > 0 else 0
+        lon_positive = 1 if self.longitude > 0 else 0
+        dep_positive = 1 if self.depth > 0 else 0
+        return int('{}{}{}{}{}{}{}'.format(calendar.timegm(self.time.timetuple()), str(abs(self.latitude)).replace('.', ''), str(abs(self.longitude)).replace('.', ''), str(abs(self.depth)).replace('.', ''), lat_positive, lon_positive, dep_positive))
